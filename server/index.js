@@ -22,8 +22,8 @@ const authRoute = require('./routes/auth');
 const postRoute = require('./routes/posts');
 
 //route middleware
-app.use('/api/user', authRoute);
-app.use('/api/user', postRoute);
+app.use('/', authRoute);
+app.use('/', postRoute);
 
 app.listen(port, () => {
     console.log(`Server has started on port ${port}.`);
