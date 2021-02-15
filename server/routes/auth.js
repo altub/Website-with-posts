@@ -1,4 +1,5 @@
-const router = require('express').Router();
+const express = require('express');
+const app = express();
 const {registerUserValidation, loginUserValidation} = require('../validation');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -6,7 +7,7 @@ const db = require('../db');
 
 const {JWT_SECRET, SESSION_EXPIRES = 60 * 60} = process.env;
 
-router.post('/register', async (req, res) => {
+app.post('/register', async (req, res) => {
     try {
         await registerUserValidation.validateAsync(req.body, {abortEarly: false});
         const {
@@ -44,7 +45,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     try {
         await loginUserValidation.validateAsync(req.body, {abortEarly: false});
         const {
@@ -75,10 +76,10 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign(currentUser, JWT_SECRET, {expiresIn: SESSION_EXPIRES});
 
 
-        res.status(200).json({message: 'Ok', token});
+        res.status(200).header('auth-token', token).json({message: 'Ok', token});
     } catch (err) {
         res.status(500).json({message: 'Invalid username or password', err});
     }
 });
 
-module.exports = router;
+module.exports = app;

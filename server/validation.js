@@ -4,7 +4,7 @@ const Joi = require('@hapi/joi');
 //register validation
 
 const email = Joi.string()
-    .alphanum()
+    .email()
     .min(3)
     .max(50)
     .required()
