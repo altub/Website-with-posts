@@ -17,7 +17,8 @@ CREATE TABLE post(
     --can change the length at a later date
     user_id UUID references users(user_id),
     description VARCHAR(255) NOT NULL,
-    datetime TIMESTAMPTZ NOT NULL
+    datetime TIMESTAMPTZ NOT NULL,
+    edited BOOLEAN NOT NULL DEFAULT 'false'
 );
 --currently implementing only a 2 layer tree
 --may change later if more depth is wanted/needed
@@ -38,10 +39,11 @@ CREATE TABLE post(
 --*******************--
 CREATE TABLE reply(
     reply_id SERIAL PRIMARY KEY NOT NULL,
-    parent_id INTEGER references post(post_id) NOT NULL,
+    post_id INTEGER references post(post_id) NOT NULL,
     user_id UUID references users(user_id) NOT NULL,
     description VARCHAR(255) NOT NULL,
-    datetime TIMESTAMPTZ NOT NULL
+    datetime TIMESTAMPTZ NOT NULL,
+    edited BOOLEAN NOT NULL DEFAULT 'false'
 );
 
 -- ALTER TABLE users

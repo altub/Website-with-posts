@@ -3,6 +3,7 @@ const app = express();
 const verify = require('./verifyToken');
 const db = require('../db');
 
+//make users posts
 app.post('/posts/:username', verify, async (req, res) => {
     try {
         const{
@@ -23,6 +24,7 @@ app.post('/posts/:username', verify, async (req, res) => {
     }
 });
 
+//get users posts
 app.get('/myPosts/:username', verify, async (req, res) => {
     try {
         const {username} = req.params;
@@ -32,12 +34,13 @@ app.get('/myPosts/:username', verify, async (req, res) => {
         const allPosts = await db.query('SELECT * FROM post WHERE user_id = $1',
         [user.rows[0].user_id]);
 
-        res.json(allPosts.rows);
+        res.status(200).json(allPosts.rows);
     } catch (err) {
         res.status(500).json({message: 'Unable to retrieve posts'});
     }
 });
 
+//delete users post
 app.delete('/posts/:username/:postID', verify, async (req, res) => {
     try {
         const {username, postID} = req.params;
@@ -53,6 +56,7 @@ app.delete('/posts/:username/:postID', verify, async (req, res) => {
     }
 });
 
+//update users post
 app.put('/posts/:username/:postID', verify, async (req, res) => {
     try {
         const {
@@ -66,9 +70,34 @@ app.put('/posts/:username/:postID', verify, async (req, res) => {
         const updatePost = await db.query('UPDATE post SET description = $1, edited = true WHERE user_id = $2 and post_id = $3',
         [description, user.rows[0].user_id, postID]);
 
-        res.status(200).json({message: 'Post was updated.'})
+        res.status(200).json({message: 'Post was updated.'});
     } catch (err) {
         res.status(500).json({message: 'Failed to edit post'});
+    }
+});
+
+//get all posts
+app.get('/posts', async (req, res) =>{
+    try {
+        const allPosts = await db.query('SELECT * FROM post');
+
+        res.status(200).json(allPosts.rows);
+    } catch (err) {
+        res.status(500).json({message: 'Failed to retrieve posts'});
+    }
+});
+
+//get all replies related to a post
+app.get('/posts/:postID', async (req, res) =>{
+    try {
+        const {postID} = req.params;
+
+        const allReplies = await db.query('SELECT * FROM reply WHERE post_id = $1', 
+        [postID]);
+
+        res.status(200).json(allReplies.rows);
+    } catch (err) {
+        res.status(500).json({message: 'Failed to retrieve posts replies'});
     }
 });
 
