@@ -20,10 +20,12 @@ app.use(express.json());
 //import routes
 const authRoute = require('./routes/auth');
 const postRoute = require('./routes/posts');
+const replyRoute = require('./routes/replies');
 
 //route middleware
 app.use('/', authRoute);
 app.use('/', postRoute);
+app.use('/', replyRoute);
 
 app.listen(port, () => {
     console.log(`Server has started on port ${port}.`);
