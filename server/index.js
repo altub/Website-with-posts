@@ -21,11 +21,13 @@ app.use(express.json());
 const authRoute = require('./routes/auth');
 const postRoute = require('./routes/posts');
 const replyRoute = require('./routes/replies');
+const profilePageRoute = require('./routes/userProfile');
 
 //route middleware
 app.use('/', authRoute);
 app.use('/', postRoute);
 app.use('/', replyRoute);
+app.use('/', profilePageRoute);
 
 app.listen(port, () => {
     console.log(`Server has started on port ${port}.`);

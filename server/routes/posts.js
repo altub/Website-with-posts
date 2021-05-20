@@ -4,18 +4,26 @@ const verify = require('./verifyToken');
 const db = require('../db');
 
 //make users posts
-app.post('/posts/:username', verify, async (req, res) => {
+app.post('/posts', verify, async (req, res) => {
     try {
-        const{
-            description,
+        // use if using /posts/:username
+        // const{
+        //     description,
+        // } = req.body;
+
+        // const {username} = req.params;
+        // const user = await db.query('SELECT * FROM users WHERE username = $1',
+        // [username]);
+        
+        // const newPost = await db.query('INSERT INTO post(user_id, description, datetime) VALUES($1, $2, CURRENT_TIMESTAMP) RETURNING *',
+        // [user.rows[0].user_id, description]);
+
+        const {
+            description
         } = req.body;
 
-        const {username} = req.params;
-        const user = await db.query('SELECT * FROM users WHERE username = $1',
-        [username]);
-        
         const newPost = await db.query('INSERT INTO post(user_id, description, datetime) VALUES($1, $2, CURRENT_TIMESTAMP) RETURNING *',
-        [user.rows[0].user_id, description]);
+        [req.user.userID, description]);
         
         res.status(200).json(newPost.rows[0]);
         
@@ -25,14 +33,18 @@ app.post('/posts/:username', verify, async (req, res) => {
 });
 
 //get users posts
-app.get('/myPosts/:username', verify, async (req, res) => {
+app.get('/myPosts', verify, async (req, res) => {
     try {
-        const {username} = req.params;
-        const user = await db.query('SELECT * FROM users WHERE username = $1',
-        [username]);
+        // use if using '/myPosts/:username'
+        // const {username} = req.params;
+        // const user = await db.query('SELECT * FROM users WHERE username = $1',
+        // [username]);
+
+        // const allPosts = await db.query('SELECT * FROM post WHERE user_id = $1',
+        // [user.rows[0].user_id]);
 
         const allPosts = await db.query('SELECT * FROM post WHERE user_id = $1',
-        [user.rows[0].user_id]);
+        [req.user.userID]);
 
         res.status(200).json(allPosts.rows);
     } catch (err) {
@@ -41,14 +53,19 @@ app.get('/myPosts/:username', verify, async (req, res) => {
 });
 
 //delete users post
-app.delete('/posts/:username/:postID', verify, async (req, res) => {
+app.delete('/posts/:postID', verify, async (req, res) => {
     try {
-        const {username, postID} = req.params;
-        const user = await db.query('SELECT * FROM users WHERE username = $1',
-        [username]);
+        // use if using /posts/:username/:postID
+        // const {username, postID} = req.params;
+        // const user = await db.query('SELECT * FROM users WHERE username = $1',
+        // [username]);
 
+        // const deletePost = await db.query('DELETE FROM post WHERE user_id = $1 and post_id = $2',
+        // [user.rows[0].user_id, postID]);
+
+        const {postID} = req.params;
         const deletePost = await db.query('DELETE FROM post WHERE user_id = $1 and post_id = $2',
-        [user.rows[0].user_id, postID]);
+        [req.user.userID, postID]);
 
         res.status(200).json({message: 'Post was deleted.'});
     } catch (err) {
@@ -57,18 +74,28 @@ app.delete('/posts/:username/:postID', verify, async (req, res) => {
 });
 
 //update users post
-app.put('/posts/:username/:postID', verify, async (req, res) => {
+app.put('/posts/:postID', verify, async (req, res) => {
     try {
+        // use if using /posts/:username/:postID
+        // const {
+        //     description
+        // } = req.body;
+
+        // const {username, postID} = req.params;
+        // const user = await db.query('SELECT * FROM users WHERE username = $1',
+        // [username]);
+        
+        // const updatePost = await db.query('UPDATE post SET description = $1, edited = true WHERE user_id = $2 and post_id = $3',
+        // [description, user.rows[0].user_id, postID]);
+
         const {
             description
         } = req.body;
 
-        const {username, postID} = req.params;
-        const user = await db.query('SELECT * FROM users WHERE username = $1',
-        [username]);
-        
+        const { postID } = req.params;
+
         const updatePost = await db.query('UPDATE post SET description = $1, edited = true WHERE user_id = $2 and post_id = $3',
-        [description, user.rows[0].user_id, postID]);
+        [description, req.user.userID, postID]);
 
         res.status(200).json({message: 'Post was updated.'});
     } catch (err) {
