@@ -74,8 +74,7 @@ app.post('/login', async (req, res) => {
 
         const currentUser = {userID: user.rows[0].user_id};
         const token = jwt.sign(currentUser, JWT_SECRET, {expiresIn: SESSION_EXPIRES});
-
-
+        
         res.status(200).header('auth-token', token).json({message: 'Ok', token});
     } catch (err) {
         res.status(500).json({message: 'Invalid username or password', err});
