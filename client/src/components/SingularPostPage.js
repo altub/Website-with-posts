@@ -1,5 +1,6 @@
 import React, {Fragment, useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
+import ReplyTo from './ReplyTo';
 
 const SingularPostPage = () => {
     const { postID } = useParams();
@@ -34,6 +35,7 @@ const SingularPostPage = () => {
 
     return(
         <Fragment>
+            <ReplyTo id={postID}/>
             <button onClick={sortAscDate}>Sort replies by old</button>
             <button onClick={sortDescDate}>Sort replies by new</button>
             <table>

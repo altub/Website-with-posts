@@ -32,6 +32,14 @@ const UserPage = () => {
         window.location = '/myPosts';
     };
 
+    const postsPage = () => {
+        window.location = '/posts';
+    };
+
+    const myReplies = () =>{
+        window.location = '/myReplies';
+    };
+
     return (
         <Fragment>
             <h1>Hello</h1>
@@ -45,6 +53,8 @@ const UserPage = () => {
                     </ul>
                     <button onClick={myPosts}>My Posts</button>
                     <button onClick={logOut}>Logout</button>
+                    <button onClick={postsPage}>See posts</button>
+                    <button onClick={myReplies}>My replies</button>
                 </div>
             ))}
         </Fragment>
